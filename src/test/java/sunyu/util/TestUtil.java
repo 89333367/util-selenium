@@ -37,10 +37,13 @@ public class TestUtil {
         if (seleniumUtil.getCurrentUrl().contains("/gongshi")) {
             seleniumUtil.waitVisibilityOfElementLocatedByCssSelector(".divPage");
 
-            String script = ResourceUtil.readUtf8Str("checkbox.js");
+            String script = ResourceUtil.readUtf8Str("checkbox1.js");
             seleniumUtil.executeJavascript(script);
-        } else {
+        } else if (seleniumUtil.getCurrentUrl().contains("/subsidyOpen")) {
             seleniumUtil.waitVisibilityOfElementLocatedByCssSelector(".pageBox");
+
+            String script = ResourceUtil.readUtf8Str("checkbox2.js");
+            seleniumUtil.executeJavascript(script);
         }
 
         ThreadUtil.sleep(1000 * 10);
