@@ -7,6 +7,7 @@ import cn.hutool.log.LogFactory;
 import cn.hutool.system.SystemUtil;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -82,12 +83,31 @@ public class SeleniumUtil implements Serializable, Closeable {
     }
 
     /**
+     * 获取当前窗口url
+     *
+     * @return
+     */
+    public String getCurrentUrl() {
+        return webDriver.getCurrentUrl();
+    }
+
+    /**
      * 获得网页标题
      *
      * @return
      */
     public String getTitle() {
         return webDriver.getTitle();
+    }
+
+    /**
+     * 执行javascript
+     *
+     * @param script
+     * @param args
+     */
+    public void executeJavascript(String script, Object... args) {
+        ((JavascriptExecutor) webDriver).executeScript(script, args);
     }
 
     /**
@@ -123,14 +143,14 @@ public class SeleniumUtil implements Serializable, Closeable {
     }
 
     /**
-     * 等待class元素存在于dom中
+     * 等待元素存在于dom中
      *
-     * @param className
+     * @param cssSelector
      * @return
      */
-    public WebElement waitPresenceOfElementLocatedByClassName(String className) {
+    public WebElement waitPresenceOfElementLocatedByCssSelector(String cssSelector) {
         //定位元素
-        By by = By.className(className);
+        By by = By.cssSelector(cssSelector);
         return waitPresenceOfElementLocatedBy(by);
     }
 
@@ -143,8 +163,43 @@ public class SeleniumUtil implements Serializable, Closeable {
     public WebElement waitPresenceOfElementLocatedBy(By by) {
         //等待一个元素存在于DOM中
         ExpectedCondition<WebElement> webElementExpectedCondition = ExpectedConditions.presenceOfElementLocated(by);
+        return webDriverWaitUntil(webElementExpectedCondition);
+    }
+
+    /**
+     * 等待元素存在于dom中并可见
+     *
+     * @param cssSelector
+     * @return
+     */
+    public WebElement waitVisibilityOfElementLocatedByCssSelector(String cssSelector) {
+        //定位元素
+        By by = By.cssSelector(cssSelector);
+        return waitVisibilityOfElementLocatedBy(by);
+    }
+
+    /**
+     * 等待一个元素存在于dom中并可见
+     *
+     * @param by
+     * @return
+     */
+    public WebElement waitVisibilityOfElementLocatedBy(By by) {
+        //等待一个元素存在于DOM中
+        ExpectedCondition<WebElement> webElementExpectedCondition = ExpectedConditions.visibilityOfElementLocated(by);
+        return webDriverWaitUntil(webElementExpectedCondition);
+    }
+
+    /**
+     * 等待一个元素
+     *
+     * @param webElementExpectedCondition
+     * @return
+     */
+    public WebElement webDriverWaitUntil(ExpectedCondition<WebElement> webElementExpectedCondition) {
         return webDriverWaitUntil(Duration.ofDays(1), webElementExpectedCondition);
     }
+
 
     /**
      * 等待一个条件成立
@@ -169,8 +224,8 @@ public class SeleniumUtil implements Serializable, Closeable {
                 log.info("配置 chrome web driver");
                 webDriverManager.setup();
                 ChromeOptions options = new ChromeOptions();
-                options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});// 禁用浏览器的自动测试软件提示
-                options.addArguments("--remote-allow-origins=*");//解决 403 出错问题
+                options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation", "disable-popup-blocking"});// 禁用浏览器的自动测试软件提示，禁用 Chrome 的弹出窗口拦截功能
+                options.addArguments("--remote-allow-origins=*", "disable-search-engine-choice-screen");//解决 403 出错问题，禁用Chrome浏览器在启动时显示的搜索引擎选择界面
                 //options.setHeadless(true);//这句话作用是不用打开浏览器
                 webDriver = new ChromeDriver(options);
             } catch (Exception e) {
@@ -243,8 +298,8 @@ public class SeleniumUtil implements Serializable, Closeable {
     @Override
     public void close() {
         log.info("销毁工具类开始");
-        killDriverProcess();
         webDriver.quit();
+        killDriverProcess();
         log.info("销毁工具类结束");
     }
 

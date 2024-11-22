@@ -1,5 +1,6 @@
 package sunyu.util;
 
+import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
@@ -20,7 +21,7 @@ public class TestUtil {
         seleniumUtil.maxWindow();
 
         //等待页面加载完毕
-        seleniumUtil.waitPresenceOfElementLocatedByClassName("footer");
+        seleniumUtil.waitPresenceOfElementLocatedByCssSelector(".footer");
 
         log.info("请选择省");
 
@@ -31,6 +32,16 @@ public class TestUtil {
         seleniumUtil.keepLastWindow();
 
         log.info("{}", seleniumUtil.getTitle());
+
+        //等待页面加载完毕
+        if (seleniumUtil.getCurrentUrl().contains("/gongshi")) {
+            seleniumUtil.waitVisibilityOfElementLocatedByCssSelector(".divPage");
+
+            String script = ResourceUtil.readUtf8Str("checkbox.js");
+            seleniumUtil.executeJavascript(script);
+        } else {
+            seleniumUtil.waitVisibilityOfElementLocatedByCssSelector(".pageBox");
+        }
 
         ThreadUtil.sleep(1000 * 10);
         seleniumUtil.close();
