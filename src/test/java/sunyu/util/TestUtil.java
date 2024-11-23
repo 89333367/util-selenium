@@ -80,13 +80,9 @@ public class TestUtil {
         log.info("等待选中导出复选框");
         seleniumUtil.waitElementSelectionStateToBeByCssSelector("#__exportCheckbox", true);
         log.info("导出复选框被选中，准备导出数据");
-        export.set(true);
+        export.set(true);//更改导出标记
         seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "准备导出数据....");
 
-        for (int i = 0; i < 10; i++) {
-            ThreadUtil.sleep(2000);
-            seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), i + "/100");
-        }
 
         ThreadUtil.sleep(1000 * 10);
         seleniumUtil.close();

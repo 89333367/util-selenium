@@ -173,6 +173,18 @@ public class SeleniumUtil implements Serializable, Closeable {
     }
 
     /**
+     * 等待元素存在于dom中并可见
+     *
+     * @param cssSelector
+     * @return
+     */
+    public WebElement waitVisibilityOfElementLocatedByCssSelector(String cssSelector) {
+        //定位元素
+        By by = By.cssSelector(cssSelector);
+        return waitVisibilityOfElementLocatedBy(by);
+    }
+
+    /**
      * 等待一个元素存在于dom中
      *
      * @param by
@@ -184,17 +196,6 @@ public class SeleniumUtil implements Serializable, Closeable {
         return webDriverWaitUntil(webElementExpectedCondition);
     }
 
-    /**
-     * 等待元素存在于dom中并可见
-     *
-     * @param cssSelector
-     * @return
-     */
-    public WebElement waitVisibilityOfElementLocatedByCssSelector(String cssSelector) {
-        //定位元素
-        By by = By.cssSelector(cssSelector);
-        return waitVisibilityOfElementLocatedBy(by);
-    }
 
     /**
      * 等待一个元素存在于dom中并可见
