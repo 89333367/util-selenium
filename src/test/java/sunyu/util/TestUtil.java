@@ -6,6 +6,7 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class TestUtil {
     Log log = LogFactory.get();
@@ -33,18 +34,37 @@ public class TestUtil {
 
         log.info("{}", seleniumUtil.getTitle());
 
-        //等待页面加载完毕
-        if (seleniumUtil.getCurrentUrl().contains("/gongshi")) {
-            seleniumUtil.waitVisibilityOfElementLocatedByCssSelector(".divPage");
-
-            String script = ResourceUtil.readUtf8Str("checkbox1.js");
-            seleniumUtil.executeJavascript(script);
-        } else if (seleniumUtil.getCurrentUrl().contains("/subsidyOpen")) {
-            seleniumUtil.waitVisibilityOfElementLocatedByCssSelector(".pageBox");
-
-            String script = ResourceUtil.readUtf8Str("checkbox2.js");
-            seleniumUtil.executeJavascript(script);
+        int pageType;//记录页面类型
+        WebElement webElement = null;
+        while (true) {
+            try {
+                webElement = seleniumUtil.findElementByCssSelector("div.operate-btn");
+                pageType = 1;
+                break;
+            } catch (Exception e) {
+                log.warn("未找到 1 类页面");
+            }
+            try {
+                webElement = seleniumUtil.findElementByCssSelector("div.queryarea_footer>div");
+                pageType = 2;
+                break;
+            } catch (Exception e) {
+                log.warn("未找到 2 类页面");
+            }
+            try {
+                webElement = seleniumUtil.findElementByCssSelector("div.ser>form");
+                pageType = 3;
+                break;
+            } catch (Exception e) {
+                log.warn("未找到 3 类页面");
+            }
+            ThreadUtil.sleep(1000);
         }
+        log.info("找到 {} 类页面", pageType);
+
+        //向页面注入复选框
+        String script = ResourceUtil.readUtf8Str("checkbox.js");
+        seleniumUtil.executeJavascript(script, webElement);
 
         ThreadUtil.sleep(1000 * 10);
         seleniumUtil.close();

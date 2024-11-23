@@ -143,6 +143,18 @@ public class SeleniumUtil implements Serializable, Closeable {
     }
 
     /**
+     * 通过css选择器查找元素
+     *
+     * @param cssSelector
+     * @return
+     */
+    public WebElement findElementByCssSelector(String cssSelector) {
+        //定位元素
+        By by = By.cssSelector(cssSelector);
+        return webDriver.findElement(by);
+    }
+
+    /**
      * 等待元素存在于dom中
      *
      * @param cssSelector
