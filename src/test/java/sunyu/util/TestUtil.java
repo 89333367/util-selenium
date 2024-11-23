@@ -46,7 +46,7 @@ public class TestUtil {
 
         //向页面注入复选框
         log.info("注入导出复选框");
-        String script = ResourceUtil.readUtf8Str("checkbox.js");
+        String script = ResourceUtil.readUtf8Str("addCheckbox.js");
         ThreadUtil.execute(() -> {
             while (!export.get()) {
                 WebElement searchDiv;
@@ -74,7 +74,7 @@ public class TestUtil {
                     }
                     ThreadUtil.sleep(1000);
                 }
-                log.info("找到 {} 类页面", pageType.get());
+                //log.info("找到 {} 类页面", pageType.get());
                 seleniumUtil.executeJavascript(script, searchDiv);
                 ThreadUtil.sleep(1000);
             }
@@ -84,6 +84,12 @@ public class TestUtil {
         new WebDriverWait(webDriver, Duration.ofDays(1)).until(ExpectedConditions.elementSelectionStateToBe(By.cssSelector("#exportCheckbox"), true));
         log.info("导出复选框被选中，准备导出数据");
         export.set(true);
+        ThreadUtil.execute(() -> {
+            while (export.get()) {
+                seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("hideSearchDiv.js"));
+                ThreadUtil.sleep(1000);
+            }
+        });
 
         ThreadUtil.sleep(1000 * 10);
         seleniumUtil.close();
