@@ -139,7 +139,7 @@ public class SeleniumUtil implements Serializable, Closeable {
      */
     public boolean waitNumberOfWindowsToBe(int expectedNumberOfWindows) {
         ExpectedCondition<Boolean> booleanExpectedCondition = ExpectedConditions.numberOfWindowsToBe(expectedNumberOfWindows);
-        return webDriverWaitUntil(Duration.ofDays(1), booleanExpectedCondition);
+        return webDriverWaitUntil(booleanExpectedCondition);
     }
 
     /**
@@ -152,6 +152,12 @@ public class SeleniumUtil implements Serializable, Closeable {
         //定位元素
         By by = By.cssSelector(cssSelector);
         return webDriver.findElement(by);
+    }
+
+    public boolean waitElementSelectionStateToBeByCssSelector(String cssSelector, boolean selected) {
+        By by = By.cssSelector(cssSelector);
+        ExpectedCondition<Boolean> booleanExpectedCondition = ExpectedConditions.elementSelectionStateToBe(by, selected);
+        return webDriverWaitUntil(booleanExpectedCondition);
     }
 
     /**
@@ -202,14 +208,16 @@ public class SeleniumUtil implements Serializable, Closeable {
         return webDriverWaitUntil(webElementExpectedCondition);
     }
 
+
     /**
-     * 等待一个元素
+     * 等待一个条件成立
      *
-     * @param webElementExpectedCondition
+     * @param condition
+     * @param <V>
      * @return
      */
-    public WebElement webDriverWaitUntil(ExpectedCondition<WebElement> webElementExpectedCondition) {
-        return webDriverWaitUntil(Duration.ofDays(1), webElementExpectedCondition);
+    public <V> V webDriverWaitUntil(Function<? super WebDriver, V> condition) {
+        return webDriverWaitUntil(Duration.ofDays(1), condition);
     }
 
 
@@ -217,14 +225,14 @@ public class SeleniumUtil implements Serializable, Closeable {
      * 等待一个条件成立
      *
      * @param waitTime
-     * @param isTrue
+     * @param condition
      * @param <V>
      * @return
      */
-    public <V> V webDriverWaitUntil(Duration waitTime, Function<? super WebDriver, V> isTrue) {
+    public <V> V webDriverWaitUntil(Duration waitTime, Function<? super WebDriver, V> condition) {
         WebDriverWait webDriverWait = new WebDriverWait(webDriver, waitTime);
         //等待条件成立后返回元素引用
-        return webDriverWait.until(isTrue);
+        return webDriverWait.until(condition);
     }
 
     private void buildWebDriver() {

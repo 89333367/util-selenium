@@ -5,13 +5,9 @@ import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -29,9 +25,10 @@ public class TestUtil {
         seleniumUtil.maxWindow();
 
         //等待页面加载完毕
-        seleniumUtil.waitPresenceOfElementLocatedByCssSelector(".footer");
+        seleniumUtil.waitVisibilityOfElementLocatedByCssSelector(".footer");
 
         log.info("请选择省");
+        seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "请选择省");
 
         //等待窗口数量为2
         seleniumUtil.waitNumberOfWindowsToBe(2);
@@ -81,15 +78,15 @@ public class TestUtil {
         });
 
         log.info("等待选中导出复选框");
-        new WebDriverWait(webDriver, Duration.ofDays(1)).until(ExpectedConditions.elementSelectionStateToBe(By.cssSelector("#exportCheckbox"), true));
+        seleniumUtil.waitElementSelectionStateToBeByCssSelector("#__exportCheckbox", true);
         log.info("导出复选框被选中，准备导出数据");
         export.set(true);
-        ThreadUtil.execute(() -> {
-            while (export.get()) {
-                seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("hideSearchDiv.js"));
-                ThreadUtil.sleep(1000);
-            }
-        });
+        seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "准备导出数据....");
+
+        for (int i = 0; i < 10; i++) {
+            ThreadUtil.sleep(2000);
+            seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), i + "/100");
+        }
 
         ThreadUtil.sleep(1000 * 10);
         seleniumUtil.close();
