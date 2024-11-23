@@ -25,7 +25,7 @@ public class TestUtil {
         seleniumUtil.maxWindow();
 
         //等待页面加载完毕
-        seleniumUtil.waitVisibilityOfElementLocatedByCssSelector(".footer");
+        seleniumUtil.waitPresenceOfElementLocatedByCssSelector(".footer");
 
         log.info("请选择省");
         seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "请选择省");
@@ -37,6 +37,8 @@ public class TestUtil {
         seleniumUtil.keepLastWindow();
 
         log.info("{}", seleniumUtil.getTitle());
+
+        seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "勾选红色复选框进行数据导出");
 
         AtomicInteger pageType = new AtomicInteger(0);//记录页面类型
         AtomicBoolean export = new AtomicBoolean(false);
