@@ -5,8 +5,15 @@ import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TestUtil {
     Log log = LogFactory.get();
@@ -34,37 +41,49 @@ public class TestUtil {
 
         log.info("{}", seleniumUtil.getTitle());
 
-        int pageType;//记录页面类型
-        WebElement webElement = null;
-        while (true) {
-            try {
-                webElement = seleniumUtil.findElementByCssSelector("div.operate-btn");
-                pageType = 1;
-                break;
-            } catch (Exception e) {
-                log.warn("未找到 1 类页面");
-            }
-            try {
-                webElement = seleniumUtil.findElementByCssSelector("div.queryarea_footer>div");
-                pageType = 2;
-                break;
-            } catch (Exception e) {
-                log.warn("未找到 2 类页面");
-            }
-            try {
-                webElement = seleniumUtil.findElementByCssSelector("div.ser>form");
-                pageType = 3;
-                break;
-            } catch (Exception e) {
-                log.warn("未找到 3 类页面");
-            }
-            ThreadUtil.sleep(1000);
-        }
-        log.info("找到 {} 类页面", pageType);
+        AtomicInteger pageType = new AtomicInteger(0);//记录页面类型
+        AtomicBoolean export = new AtomicBoolean(false);
 
         //向页面注入复选框
+        log.info("注入导出复选框");
         String script = ResourceUtil.readUtf8Str("checkbox.js");
-        seleniumUtil.executeJavascript(script, webElement);
+        ThreadUtil.execute(() -> {
+            while (!export.get()) {
+                WebElement searchDiv;
+                while (true) {
+                    try {
+                        searchDiv = seleniumUtil.findElementByCssSelector("div.operate-btn");
+                        pageType.set(1);
+                        break;
+                    } catch (Exception e) {
+                        //log.warn("未找到 1 类页面");
+                    }
+                    try {
+                        searchDiv = seleniumUtil.findElementByCssSelector("div.queryarea_footer>div");
+                        pageType.set(2);
+                        break;
+                    } catch (Exception e) {
+                        //log.warn("未找到 2 类页面");
+                    }
+                    try {
+                        searchDiv = seleniumUtil.findElementByCssSelector("div.ser>form");
+                        pageType.set(3);
+                        break;
+                    } catch (Exception e) {
+                        //log.warn("未找到 3 类页面");
+                    }
+                    ThreadUtil.sleep(1000);
+                }
+                log.info("找到 {} 类页面", pageType.get());
+                seleniumUtil.executeJavascript(script, searchDiv);
+                ThreadUtil.sleep(1000);
+            }
+        });
+
+        log.info("等待选中导出复选框");
+        new WebDriverWait(webDriver, Duration.ofDays(1)).until(ExpectedConditions.elementSelectionStateToBe(By.cssSelector("#exportCheckbox"), true));
+        log.info("导出复选框被选中，准备导出数据");
+        export.set(true);
 
         ThreadUtil.sleep(1000 * 10);
         seleniumUtil.close();

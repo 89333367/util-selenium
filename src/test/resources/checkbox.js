@@ -23,6 +23,7 @@ if (existingCheckbox) {
     let label = document.createElement('label');
     label.htmlFor = 'exportCheckbox'; // 关联复选框的 id
     label.textContent = '勾选复选框进行导出操作'; // 设置标签的文本内容
+    label.style.cursor = 'pointer';   // 更改鼠标悬停时的光标样式
 
     // 设置样式
     label.style.fontSize = '20px'; // 放大字体
