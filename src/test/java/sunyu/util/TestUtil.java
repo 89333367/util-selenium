@@ -107,21 +107,16 @@ public class TestUtil {
                     }
                 }
                 List<WebElement> trs = null;
-                while (trs == null) {
+                while (CollUtil.isEmpty(trs)) {
                     try {
                         trs = seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("table[role='c-table']>tbody>tr");
                     } catch (Exception e) {
                         log.warn("获取数据异常，重试");
                     }
                 }
-                if (preText != null && preText.equals(trs.get(0).getText())) {
-                    log.warn("翻页不成功，重新翻页");
-                    i--;
-                    continue;
-                }
-                preText = trs.get(0).getText();
                 log.info("页码 {} 有 {} 行数据", i, trs.size());
                 seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
+                seleniumUtil.removeWebElements(trs);//这些数据已导出，删除数据，翻页后会添加新数据
             }
         } else if (pageType.get() == 2) {
             // 共229341条，第1/15290页
@@ -152,7 +147,7 @@ public class TestUtil {
                     }
                 }
                 List<WebElement> trs = null;
-                while (trs == null) {
+                while (CollUtil.isEmpty(trs)) {
                     try {
                         trs = seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("table.el-table__body>tbody>tr");
                     } catch (Exception e) {
