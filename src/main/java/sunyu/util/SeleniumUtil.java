@@ -23,6 +23,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.Closeable;
 import java.io.Serializable;
 import java.time.Duration;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -164,6 +165,18 @@ public class SeleniumUtil implements Serializable, Closeable {
         return webDriver.findElement(by);
     }
 
+    /**
+     * 通过css选择器查找多个元素
+     *
+     * @param cssSelector
+     * @return
+     */
+    public List<WebElement> findElementsByCssSelector(String cssSelector) {
+        //定位元素
+        By by = By.cssSelector(cssSelector);
+        return webDriver.findElements(by);
+    }
+
     public boolean waitElementSelectionStateToBeByCssSelector(String cssSelector, boolean selected) {
         By by = By.cssSelector(cssSelector);
         ExpectedCondition<Boolean> booleanExpectedCondition = ExpectedConditions.elementSelectionStateToBe(by, selected);
@@ -183,6 +196,18 @@ public class SeleniumUtil implements Serializable, Closeable {
     }
 
     /**
+     * 等待元素存在于dom中
+     *
+     * @param cssSelector
+     * @return
+     */
+    public List<WebElement> waitPresenceOfAllElementsLocatedByCssSelector(String cssSelector) {
+        //定位元素
+        By by = By.cssSelector(cssSelector);
+        return waitPresenceOfAllElementsLocatedBy(by);
+    }
+
+    /**
      * 等待元素存在于dom中并可见
      *
      * @param cssSelector
@@ -195,6 +220,17 @@ public class SeleniumUtil implements Serializable, Closeable {
     }
 
     /**
+     * 等待元素存在于dom中并可见
+     *
+     * @param cssSelector
+     * @return
+     */
+    public List<WebElement> waitVisibilityOfAllElementsLocatedByCssSelector(String cssSelector) {
+        By by = By.cssSelector(cssSelector);
+        return waitVisibilityOfAllElementsLocatedBy(by);
+    }
+
+    /**
      * 等待一个元素存在于dom中
      *
      * @param by
@@ -204,6 +240,17 @@ public class SeleniumUtil implements Serializable, Closeable {
         //等待一个元素存在于DOM中
         ExpectedCondition<WebElement> webElementExpectedCondition = ExpectedConditions.presenceOfElementLocated(by);
         return webDriverWaitUntil(webElementExpectedCondition);
+    }
+
+    /**
+     * 等待元素存在于dom中
+     *
+     * @param by
+     * @return
+     */
+    public List<WebElement> waitPresenceOfAllElementsLocatedBy(By by) {
+        ExpectedCondition<List<WebElement>> listExpectedCondition = ExpectedConditions.presenceOfAllElementsLocatedBy(by);
+        return webDriverWaitUntil(listExpectedCondition);
     }
 
 
@@ -219,6 +266,16 @@ public class SeleniumUtil implements Serializable, Closeable {
         return webDriverWaitUntil(webElementExpectedCondition);
     }
 
+    /**
+     * 等待元素存在于dom中并可见
+     *
+     * @param by
+     * @return
+     */
+    public List<WebElement> waitVisibilityOfAllElementsLocatedBy(By by) {
+        ExpectedCondition<List<WebElement>> listExpectedCondition = ExpectedConditions.visibilityOfAllElementsLocatedBy(by);
+        return webDriverWaitUntil(listExpectedCondition);
+    }
 
     /**
      * 等待一个条件成立
