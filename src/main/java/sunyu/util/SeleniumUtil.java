@@ -101,6 +101,16 @@ public class SeleniumUtil implements Serializable, Closeable {
     }
 
     /**
+     * 获得html文档
+     *
+     * @param webElement
+     * @return
+     */
+    public String getOuterHTML(WebElement webElement) {
+        return webElement.getAttribute("outerHTML");
+    }
+
+    /**
      * 执行javascript
      *
      * @param script

@@ -4,6 +4,8 @@ import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -38,7 +40,7 @@ public class TestUtil {
 
         log.info("{}", seleniumUtil.getTitle());
 
-        seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "勾选红色复选框进行数据导出");
+        seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "勾选复选框进行数据导出");
 
         AtomicInteger pageType = new AtomicInteger(0);//记录页面类型
         AtomicBoolean export = new AtomicBoolean(false);
@@ -80,11 +82,20 @@ public class TestUtil {
         });
 
         log.info("等待选中导出复选框");
-        seleniumUtil.waitElementSelectionStateToBeByCssSelector("#__exportCheckbox", true);
+        seleniumUtil.waitElementSelectionStateToBeByCssSelector("#selenium_exportCheckbox", true);
         log.info("导出复选框被选中，准备导出数据");
         export.set(true);//更改导出标记
         seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "准备导出数据....");
 
+        log.info("页面类型 {}", pageType.get());
+        if (pageType.get() == 1) {
+            WebElement dataTable = seleniumUtil.waitVisibilityOfElementLocatedByCssSelector("table");
+            Document table = Jsoup.parse(seleniumUtil.getOuterHTML(dataTable));
+        } else if (pageType.get() == 2) {
+
+        } else if (pageType.get() == 3) {
+
+        }
 
         ThreadUtil.sleep(1000 * 10);
         seleniumUtil.close();

@@ -1,6 +1,6 @@
 // 检查是否已经存在复选框
-let __exportCheckbox = document.getElementById('__exportCheckbox');
-if (__exportCheckbox) {
+let selenium_exportCheckbox = document.getElementById('selenium_exportCheckbox');
+if (selenium_exportCheckbox) {
     console.log('复选框已存在，不执行任何操作。');
 } else {
     // 步骤1: 找到目标 div 元素
@@ -9,7 +9,7 @@ if (__exportCheckbox) {
     // 步骤2: 创建复选框
     let checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    checkbox.id = '__exportCheckbox'; // 给复选框一个 id
+    checkbox.id = 'selenium_exportCheckbox'; // 给复选框一个 id
     // 设置复选框的样式
     checkbox.style.width = '50px';       // 设置宽度
     checkbox.style.height = '50px';      // 设置高度
@@ -21,7 +21,7 @@ if (__exportCheckbox) {
 
     // 步骤3: 创建标签
     let label = document.createElement('label');
-    label.htmlFor = '__exportCheckbox'; // 关联复选框的 id
+    label.htmlFor = 'selenium_exportCheckbox'; // 关联复选框的 id
     label.textContent = '勾选复选框进行导出操作'; // 设置标签的文本内容
     label.style.cursor = 'pointer';   // 更改鼠标悬停时的光标样式
 
