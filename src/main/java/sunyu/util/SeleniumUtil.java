@@ -148,7 +148,7 @@ public class SeleniumUtil implements Serializable, Closeable {
      * @param expectedNumberOfWindows
      * @return
      */
-    public boolean waitNumberOfWindowsToBe(int expectedNumberOfWindows) {
+    public Boolean waitNumberOfWindowsToBe(int expectedNumberOfWindows) {
         ExpectedCondition<Boolean> booleanExpectedCondition = ExpectedConditions.numberOfWindowsToBe(expectedNumberOfWindows);
         return webDriverWaitUntil(booleanExpectedCondition);
     }
@@ -177,7 +177,7 @@ public class SeleniumUtil implements Serializable, Closeable {
         return webDriver.findElements(by);
     }
 
-    public boolean waitElementSelectionStateToBeByCssSelector(String cssSelector, boolean selected) {
+    public Boolean waitElementSelectionStateToBeByCssSelector(String cssSelector, boolean selected) {
         By by = By.cssSelector(cssSelector);
         ExpectedCondition<Boolean> booleanExpectedCondition = ExpectedConditions.elementSelectionStateToBe(by, selected);
         return webDriverWaitUntil(booleanExpectedCondition);
@@ -231,6 +231,17 @@ public class SeleniumUtil implements Serializable, Closeable {
     }
 
     /**
+     * 等待直到指定的元素不可见或者从DOM中消失
+     *
+     * @param cssSelector
+     * @return
+     */
+    public Boolean waitInvisibilityOfElementLocatedByCssSelector(String cssSelector) {
+        By by = By.cssSelector(cssSelector);
+        return waitInvisibilityOfElementLocatedBy(by);
+    }
+
+    /**
      * 等待一个元素存在于dom中
      *
      * @param by
@@ -275,6 +286,17 @@ public class SeleniumUtil implements Serializable, Closeable {
     public List<WebElement> waitVisibilityOfAllElementsLocatedBy(By by) {
         ExpectedCondition<List<WebElement>> listExpectedCondition = ExpectedConditions.visibilityOfAllElementsLocatedBy(by);
         return webDriverWaitUntil(listExpectedCondition);
+    }
+
+    /**
+     * 等待直到指定的元素不可见或者从DOM中消失
+     *
+     * @param by
+     * @return
+     */
+    public Boolean waitInvisibilityOfElementLocatedBy(By by) {
+        ExpectedCondition<Boolean> booleanExpectedCondition = ExpectedConditions.invisibilityOfElementLocated(by);
+        return webDriverWaitUntil(booleanExpectedCondition);
     }
 
     /**

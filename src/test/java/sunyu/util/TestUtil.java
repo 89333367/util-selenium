@@ -160,8 +160,13 @@ public class TestUtil {
                     }
                 }
                 if (preText != null && preText.equals(trs.get(0).getText())) {
-                    log.warn("翻页不成功，重新翻页");
-                    ThreadUtil.sleep(1000);
+                    if (seleniumUtil.findElementByCssSelector("div.code-dialog").isDisplayed()) {
+                        log.info("等待输入验证码");
+                        seleniumUtil.waitInvisibilityOfElementLocatedByCssSelector("div.code-dialog");
+                        log.info("验证码输入完毕");
+                    } else {
+                        log.warn("翻页不成功，重新翻页");
+                    }
                     i--;
                     continue;
                 }
