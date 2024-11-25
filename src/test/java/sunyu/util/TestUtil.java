@@ -175,7 +175,55 @@ public class TestUtil {
                 seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
             }
         } else if (pageType.get() == 3) {
-
+            seleniumUtil.waitVisibilityOfElementLocatedByCssSelector("div.foot_main>p");//等待footer显示
+            int totalPage = 1;
+            for (WebElement el : seleniumUtil.findElementsByCssSelector("div.pagerItem>a")) {
+                if (el.getText().equals("尾页")) {
+                    // /GZBT2021To23/pub/GongShiSearch?pageIndex=2
+                    String s = el.getAttribute("href");
+                    totalPage = Convert.toInt(ReUtil.getGroup1("pageIndex=(\\d+)", s));
+                }
+            }
+            log.info("准备导出 {} 页数据", totalPage);
+            //获取表头
+            for (WebElement th : seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("table>tbody>tr>td>table>thead>tr>td")) {
+                log.info("{}", th.getText());
+            }
+            for (int i = 1; i <= totalPage; i++) {
+                if (i > 1) {//大于1页的时候才需要点击页码进行翻页
+                    log.info("翻页到 {}", i);
+                    List<WebElement> els = null;
+                    while (CollUtil.isEmpty(els)) {
+                        try {
+                            els = seleniumUtil.waitPresenceOfAllElementsLocatedByCssSelector("div.pagerItem>a");
+                        } catch (Exception e) {
+                            log.warn("获取分页条异常，重试");
+                        }
+                    }
+                    for (WebElement el : els) {
+                        if (el.getText().equals(Convert.toStr(i))) {
+                            el.click();//点击页码，进行翻页
+                            break;
+                        }
+                    }
+                }
+                List<WebElement> trs = null;
+                while (trs == null) {
+                    try {
+                        trs = seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("#list-pub>tr");
+                    } catch (Exception e) {
+                        log.warn("获取数据异常，重试");
+                    }
+                }
+                if (preText != null && preText.equals(trs.get(0).getText())) {
+                    log.warn("翻页不成功，重新翻页");
+                    i--;
+                    continue;
+                }
+                preText = trs.get(0).getText();
+                log.info("页码 {} 有 {} 行数据", i, trs.size());
+                seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
+            }
         }
         seleniumUtil.close();
     }
@@ -211,5 +259,11 @@ public class TestUtil {
             }
             ThreadUtil.sleep(1000);
         }
+    }
+
+    @Test
+    void t005() {
+        String s = "/GZBT2021To23/pub/GongShiSearch?pageIndex=2";
+        log.info("{}", ReUtil.getGroup1("pageIndex=(\\d+)", s));
     }
 }
