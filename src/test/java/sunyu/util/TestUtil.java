@@ -1,5 +1,6 @@
 package sunyu.util;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.thread.ThreadUtil;
@@ -128,31 +129,28 @@ public class TestUtil {
             String s = seleniumUtil.waitVisibilityOfElementLocatedByCssSelector("span.slot_style").getText();
             int totalPage = Convert.toInt(ReUtil.getGroup1("/(\\d+)页", s));
             log.info("准备导出 {} 页数据", totalPage);
+            //获取表头
+            for (WebElement th : seleniumUtil.waitPresenceOfAllElementsLocatedByCssSelector("table.el-table__header>thead>tr>th")) {
+                log.info("{}", th.getText());
+            }
             for (int i = 1; i <= totalPage; i++) {
-                if (i == 1) {
-                    //获取表头
-                    for (WebElement th : seleniumUtil.waitPresenceOfAllElementsLocatedByCssSelector("table.el-table__header>thead>tr>th")) {
-                        log.info("{}", th.getText());
-                    }
-                } else {//大于1页的时候才需要点击页码进行翻页
+                if (i > 1) {//大于1页的时候才需要点击页码进行翻页
                     log.info("翻页到 {}", i);
                     List<WebElement> els = null;
-                    while (els == null) {
+                    while (CollUtil.isEmpty(els)) {
                         try {
                             els = seleniumUtil.waitPresenceOfAllElementsLocatedByCssSelector("ul.el-pager>li");
                         } catch (Exception e) {
-                            log.warn("获取数据异常，重试");
+                            log.warn("获取分页条异常，重试");
                         }
                     }
                     for (WebElement el : els) {
-                        log.debug("{}", el.getText());
                         if (el.getText().equals(Convert.toStr(i))) {
                             el.click();//点击页码，进行翻页
                             break;
                         }
                     }
                 }
-                seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
                 List<WebElement> trs = null;
                 while (trs == null) {
                     try {
@@ -161,7 +159,15 @@ public class TestUtil {
                         log.warn("获取数据异常，重试");
                     }
                 }
+                if (preText != null && preText.equals(trs.get(0).getText())) {
+                    log.warn("翻页不成功，重新翻页");
+                    ThreadUtil.sleep(1000);
+                    i--;
+                    continue;
+                }
+                preText = trs.get(0).getText();
                 log.info("页码 {} 有 {} 行数据", i, trs.size());
+                seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
             }
         } else if (pageType.get() == 3) {
 
