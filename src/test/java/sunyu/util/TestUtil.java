@@ -91,10 +91,19 @@ public class TestUtil {
             int totalPage = Convert.toInt(ReUtil.getGroup1("/(\\d+)页", s));
             log.info("准备导出 {} 页数据", totalPage);
             for (int i = 1; i <= totalPage; i++) {
-                if (i > 1) {//大于1页的时候才需要点击页码进行翻页
+                if (i == 1) {
+                    //获取表头
+                    for (WebElement th : seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("table[role='c-table']>thead>tr>th")) {
+                        log.info("{}", th.getText());
+                    }
+                } else {//大于1页的时候才需要点击页码进行翻页
+                    log.info("翻页到 {}", i);
                     for (WebElement el : seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("div.pagerItem>a")) {
                         if (el.getText().equals(Convert.toStr(i))) {
                             el.click();//点击页码，进行翻页
+                            log.info("等待翻页成功");
+                            seleniumUtil.waitVisibilityOfElementLocatedByCssSelector("div.pagerItem>a.current");//等待选中
+                            log.info("翻页成功");
                             break;
                         }
                     }
@@ -105,6 +114,7 @@ public class TestUtil {
                     try {
                         trs = seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("table[role='c-table']>tbody>tr");
                     } catch (Exception e) {
+                        log.warn("获取数据异常，重试");
                     }
                 }
                 log.info("页码 {} 有 {} 行数据", i, trs.size());
@@ -116,8 +126,23 @@ public class TestUtil {
             int totalPage = Convert.toInt(ReUtil.getGroup1("/(\\d+)页", s));
             log.info("准备导出 {} 页数据", totalPage);
             for (int i = 1; i <= totalPage; i++) {
-                if (i > 1) {//大于1页的时候才需要点击页码进行翻页
-                    for (WebElement el : seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("li.number")) {
+                if (i == 1) {
+                    //获取表头
+                    for (WebElement th : seleniumUtil.waitPresenceOfAllElementsLocatedByCssSelector("table.el-table__header>thead>tr>th")) {
+                        log.info("{}", th.getText());
+                    }
+                } else {//大于1页的时候才需要点击页码进行翻页
+                    log.info("翻页到 {}", i);
+                    List<WebElement> els = null;
+                    while (els == null) {
+                        try {
+                            els = seleniumUtil.waitPresenceOfAllElementsLocatedByCssSelector("ul.el-pager>li");
+                        } catch (Exception e) {
+                            log.warn("获取数据异常，重试");
+                        }
+                    }
+                    for (WebElement el : els) {
+                        log.debug("{}", el.getText());
                         if (el.getText().equals(Convert.toStr(i))) {
                             el.click();//点击页码，进行翻页
                             break;
@@ -130,6 +155,7 @@ public class TestUtil {
                     try {
                         trs = seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("table.el-table__body>tbody>tr");
                     } catch (Exception e) {
+                        log.warn("获取数据异常，重试");
                     }
                 }
                 log.info("页码 {} 有 {} 行数据", i, trs.size());
