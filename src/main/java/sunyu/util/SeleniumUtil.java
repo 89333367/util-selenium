@@ -143,6 +143,26 @@ public class SeleniumUtil implements Serializable, Closeable {
     }
 
     /**
+     * 删除一批元素
+     *
+     * @param webElements
+     */
+    public void removeWebElements(List<WebElement> webElements) {
+        for (WebElement webElement : webElements) {
+            removeWebElement(webElement);
+        }
+    }
+
+    /**
+     * 删除一个元素
+     *
+     * @param webElement
+     */
+    public void removeWebElement(WebElement webElement) {
+        executeJavascript("arguments[0].remove()", webElement);
+    }
+
+    /**
      * 等待窗口的数量是否为特定的值
      *
      * @param expectedNumberOfWindows
