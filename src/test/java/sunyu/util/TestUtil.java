@@ -85,7 +85,6 @@ public class TestUtil {
         seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "准备导出数据....");
 
         log.info("页面类型 {}", pageType.get());
-        String preText = null;//记录上一页第一行的内容，用来对比翻页是否生效
         if (pageType.get() == 1) {
             //共7474条， 第1/499页
             //共7条， 第1/1页
@@ -101,6 +100,7 @@ public class TestUtil {
                     log.info("翻页到 {}", i);
                     for (WebElement el : seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("div.pagerItem>a")) {
                         if (el.getText().equals(Convert.toStr(i))) {
+                            log.debug("点击翻页 {}", i);
                             el.click();//点击页码，进行翻页
                             break;
                         }
@@ -129,6 +129,7 @@ public class TestUtil {
                 log.info("{}", th.getText());
             }
             for (int i = 1; i <= totalPage; i++) {
+                List<WebElement> trs = null;
                 if (i > 1) {//大于1页的时候才需要点击页码进行翻页
                     log.info("翻页到 {}", i);
                     List<WebElement> els = null;
@@ -141,12 +142,18 @@ public class TestUtil {
                     }
                     for (WebElement el : els) {
                         if (el.getText().equals(Convert.toStr(i))) {
+                            log.debug("点击翻页 {}", i);
                             el.click();//点击页码，进行翻页
+                            ThreadUtil.sleep(100);
+                            if (seleniumUtil.findElementByCssSelector("div.code-dialog").isDisplayed()) {
+                                log.info("等待输入验证码");
+                                seleniumUtil.waitInvisibilityOfElementLocatedByCssSelector("div.code-dialog");
+                                log.info("验证码输入完毕");
+                            }
                             break;
                         }
                     }
                 }
-                List<WebElement> trs = null;
                 while (CollUtil.isEmpty(trs)) {
                     try {
                         trs = seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("table.el-table__body>tbody>tr");
@@ -154,19 +161,8 @@ public class TestUtil {
                         log.warn("获取数据异常，重试");
                     }
                 }
-                if (preText != null && preText.equals(trs.get(0).getText())) {
-                    if (seleniumUtil.findElementByCssSelector("div.code-dialog").isDisplayed()) {
-                        log.info("等待输入验证码");
-                        seleniumUtil.waitInvisibilityOfElementLocatedByCssSelector("div.code-dialog");
-                        log.info("验证码输入完毕");
-                    } else {
-                        log.warn("翻页不成功，重新翻页");
-                    }
-                    i--;
-                    continue;
-                }
-                preText = trs.get(0).getText();
                 log.info("页码 {} 有 {} 行数据", i, trs.size());
+                log.debug("第一行数据内容 {}", trs.get(0).getText().replaceAll("\n", ""));
                 seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
             }
         } else if (pageType.get() == 3) {
@@ -197,6 +193,7 @@ public class TestUtil {
                     }
                     for (WebElement el : els) {
                         if (el.getText().equals(Convert.toStr(i))) {
+                            log.debug("点击翻页 {}", i);
                             el.click();//点击页码，进行翻页
                             break;
                         }

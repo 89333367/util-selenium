@@ -163,6 +163,26 @@ public class SeleniumUtil implements Serializable, Closeable {
     }
 
     /**
+     * 隐藏一批元素
+     *
+     * @param webElements
+     */
+    public void hideWebElements(List<WebElement> webElements) {
+        for (WebElement webElement : webElements) {
+            hideWebElement(webElement);
+        }
+    }
+
+    /**
+     * 隐藏一个元素
+     *
+     * @param webElement
+     */
+    public void hideWebElement(WebElement webElement) {
+        executeJavascript("arguments[0].style.display = 'none'", webElement);
+    }
+
+    /**
      * 等待窗口的数量是否为特定的值
      *
      * @param expectedNumberOfWindows
