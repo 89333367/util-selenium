@@ -128,8 +128,8 @@ public class TestUtil {
             for (WebElement th : seleniumUtil.waitPresenceOfAllElementsLocatedByCssSelector("table.el-table__header>thead>tr>th")) {
                 log.info("{}", th.getText());
             }
+            String preText = null;
             for (int i = 1; i <= totalPage; i++) {
-                List<WebElement> trs = null;
                 if (i > 1) {//大于1页的时候才需要点击页码进行翻页
                     log.info("翻页到 {}", i);
                     List<WebElement> els = null;
@@ -144,25 +144,32 @@ public class TestUtil {
                         if (el.getText().equals(Convert.toStr(i))) {
                             log.debug("点击翻页 {}", i);
                             el.click();//点击页码，进行翻页
-                            ThreadUtil.sleep(100);
-                            if (seleniumUtil.findElementByCssSelector("div.code-dialog").isDisplayed()) {
-                                log.info("等待输入验证码");
-                                seleniumUtil.waitInvisibilityOfElementLocatedByCssSelector("div.code-dialog");
-                                log.info("验证码输入完毕");
-                            }
                             break;
                         }
                     }
                 }
+                List<WebElement> trs = null;
                 while (CollUtil.isEmpty(trs)) {
                     try {
+                        if (seleniumUtil.findElementByCssSelector("div.code-dialog").isDisplayed()) {
+                            log.info("等待输入验证码");
+                            seleniumUtil.waitInvisibilityOfElementLocatedByCssSelector("div.code-dialog");
+                            log.info("验证码输入完毕");
+                        }
                         trs = seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("table.el-table__body>tbody>tr");
+                        if (preText != null && CollUtil.isNotEmpty(trs)) {
+                            if (preText.equals(trs.get(0).getText())) {
+                                log.warn("当前获取的数据与上一页数据相同，重新获取");
+                                trs = null;
+                            }
+                        } else {
+                            preText = trs.get(0).getText();
+                        }
                     } catch (Exception e) {
                         log.warn("获取数据异常，重试");
                     }
                 }
                 log.info("页码 {} 有 {} 行数据", i, trs.size());
-                log.debug("第一行数据内容 {}", trs.get(0).getText().replaceAll("\n", ""));
                 seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
             }
         } else if (pageType.get() == 3) {
