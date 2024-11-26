@@ -9,6 +9,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -101,7 +102,7 @@ public class TestUtil {
                     for (WebElement el : seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("div.pagerItem>a")) {
                         if (el.getText().equals(Convert.toStr(i))) {
                             log.debug("点击翻页 {}", i);
-                            el.click();//点击页码，进行翻页
+                            seleniumUtil.executeJavascript("arguments[0].click()", el);//点击页码，进行翻页
                             break;
                         }
                     }
@@ -128,7 +129,7 @@ public class TestUtil {
             for (WebElement th : seleniumUtil.waitPresenceOfAllElementsLocatedByCssSelector("table.el-table__header>thead>tr>th")) {
                 log.info("{}", th.getText());
             }
-            String preText = null;
+            String preTr0HTML = null;
             for (int i = 1; i <= totalPage; i++) {
                 if (i > 1) {//大于1页的时候才需要点击页码进行翻页
                     log.info("翻页到 {}", i);
@@ -143,7 +144,7 @@ public class TestUtil {
                     for (WebElement el : els) {
                         if (el.getText().equals(Convert.toStr(i))) {
                             log.debug("点击翻页 {}", i);
-                            el.click();//点击页码，进行翻页
+                            seleniumUtil.executeJavascript("arguments[0].click()", el);//点击页码，进行翻页
                             break;
                         }
                     }
@@ -153,23 +154,27 @@ public class TestUtil {
                     try {
                         if (seleniumUtil.findElementByCssSelector("div.code-dialog").isDisplayed()) {
                             log.info("等待输入验证码");
+                            seleniumUtil.findElementByCssSelector("input[placeholder='请输入验证码']").sendKeys("");//使其光标在输入框中
                             seleniumUtil.waitInvisibilityOfElementLocatedByCssSelector("div.code-dialog");
                             log.info("验证码输入完毕");
                         }
                         trs = seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("table.el-table__body>tbody>tr");
-                        if (preText != null && CollUtil.isNotEmpty(trs)) {
-                            if (preText.equals(trs.get(0).getText())) {
-                                log.warn("当前获取的数据与上一页数据相同，重新获取");
-                                trs = null;
-                            }
+                        if (preTr0HTML != null && preTr0HTML.equals(seleniumUtil.getOuterHTML(trs.get(0)))) {
+                            log.warn("当前获取的数据与上一页数据相同，重新获取");
+                            trs = null;
                         } else {
-                            preText = trs.get(0).getText();
+                            preTr0HTML = seleniumUtil.getOuterHTML(trs.get(0));
                         }
                     } catch (Exception e) {
                         log.warn("获取数据异常，重试");
                     }
                 }
                 log.info("页码 {} 有 {} 行数据", i, trs.size());
+                String ts = "";
+                for (WebElement td : trs.get(0).findElements(By.cssSelector("td"))) {
+                    ts += td.getText();
+                }
+                log.debug(ts);
                 seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
             }
         } else if (pageType.get() == 3) {
@@ -201,7 +206,7 @@ public class TestUtil {
                     for (WebElement el : els) {
                         if (el.getText().equals(Convert.toStr(i))) {
                             log.debug("点击翻页 {}", i);
-                            el.click();//点击页码，进行翻页
+                            seleniumUtil.executeJavascript("arguments[0].click()", el);//点击页码，进行翻页
                             break;
                         }
                     }
