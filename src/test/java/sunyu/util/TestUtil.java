@@ -104,7 +104,7 @@ public class TestUtil {
                     //log.info("翻页到 {}", i);
                     for (WebElement el : seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("div.pagerItem>a")) {
                         if (el.getText().equals(Convert.toStr(i))) {
-                            log.debug("点击翻页 {}", i);
+                            //log.debug("点击翻页 {}", i);
                             seleniumUtil.executeJavascript("arguments[0].click()", el);//点击页码，进行翻页
                             break;
                         }
@@ -119,6 +119,7 @@ public class TestUtil {
                     }
                 }
                 //log.info("页码 {} 有 {} 行数据", i, trs.size());
+                log.info("导出进度 {}/{}", i, totalPage);
                 seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
                 for (WebElement tr : trs) {
                     List<String> tds = new ArrayList<>();
@@ -154,7 +155,7 @@ public class TestUtil {
                     }
                     for (WebElement el : els) {
                         if (el.getText().equals(Convert.toStr(i))) {
-                            log.debug("点击翻页 {}", i);
+                            //log.debug("点击翻页 {}", i);
                             seleniumUtil.executeJavascript("arguments[0].click()", el);//点击页码，进行翻页
                             break;
                         }
@@ -181,6 +182,7 @@ public class TestUtil {
                     }
                 }
                 //log.info("页码 {} 有 {} 行数据", i, trs.size());
+                log.info("导出进度 {}/{}", i, totalPage);
                 seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
                 for (WebElement tr : trs) {
                     List<String> tds = new ArrayList<>();
@@ -219,7 +221,7 @@ public class TestUtil {
                     }
                     for (WebElement el : els) {
                         if (el.getText().equals(Convert.toStr(i))) {
-                            log.debug("点击翻页 {}", i);
+                            //log.debug("点击翻页 {}", i);
                             seleniumUtil.executeJavascript("arguments[0].click()", el);//点击页码，进行翻页
                             break;
                         }
@@ -234,6 +236,7 @@ public class TestUtil {
                     }
                 }
                 //log.info("页码 {} 有 {} 行数据", i, trs.size());
+                log.info("导出进度 {}/{}", i, totalPage);
                 seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
                 for (WebElement tr : trs) {
                     List<String> tds = new ArrayList<>();
