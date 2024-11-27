@@ -75,10 +75,11 @@ public class TestUtil {
                 }
                 //log.info("找到 {} 类页面", pageType.get());
                 seleniumUtil.executeJavascript(addCheckboxScript, searchDiv);
-                seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "勾选复选框进行数据导出");
                 ThreadUtil.sleep(1000);
             }
         });
+
+        seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "勾选复选框进行数据导出");
 
         log.info("等待选中导出复选框");
         seleniumUtil.waitElementSelectionStateToBeByCssSelector("#selenium_exportCheckbox", true);
