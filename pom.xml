@@ -32,7 +32,7 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.33</version>
+            <version>5.8.34</version>
         </dependency>
         <!-- https://central.sonatype.com/artifact/org.junit.jupiter/junit-jupiter/versions -->
         <dependency>
@@ -52,13 +52,8 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <!-- jdk8只能支持到4.13.0版本，再高就要使用jdk11了 -->
+            <!--<version>4.27.0</version>-->
             <version>4.13.0</version>
-        </dependency>
-        <!-- https://central.sonatype.com/artifact/org.jsoup/jsoup/versions -->
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.18.1</version>
         </dependency>
     </dependencies>
 

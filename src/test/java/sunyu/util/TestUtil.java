@@ -43,12 +43,12 @@ public class TestUtil {
 
         log.debug("{}", seleniumUtil.getTitle());
 
-        AtomicInteger pageType = new AtomicInteger(0);//记录页面类型
+        AtomicInteger pageType = new AtomicInteger(0);//记录页面类型，目前已知有3种类型页面
         AtomicBoolean exporting = new AtomicBoolean(false);//标记是否正在导出
 
         //向页面注入复选框
         log.debug("注入导出复选框");
-        String script = ResourceUtil.readUtf8Str("addCheckbox.js");
+        String addCheckboxScript = ResourceUtil.readUtf8Str("addCheckbox.js");
         ThreadUtil.execute(() -> {
             while (!exporting.get()) {
                 WebElement searchDiv;
@@ -74,7 +74,7 @@ public class TestUtil {
                     ThreadUtil.sleep(1000);
                 }
                 //log.info("找到 {} 类页面", pageType.get());
-                seleniumUtil.executeJavascript(script, searchDiv);
+                seleniumUtil.executeJavascript(addCheckboxScript, searchDiv);
                 seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "勾选复选框进行数据导出");
                 ThreadUtil.sleep(1000);
             }
