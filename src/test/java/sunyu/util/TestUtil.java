@@ -8,6 +8,8 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+import cn.hutool.poi.excel.BigExcelWriter;
+import cn.hutool.poi.excel.ExcelUtil;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -42,6 +44,7 @@ public class TestUtil {
         seleniumUtil.keepLastWindow();
 
         log.debug("{}", seleniumUtil.getTitle());
+        BigExcelWriter bigWriter = ExcelUtil.getBigWriter(seleniumUtil.getTitle() + ".xlsx");
 
         AtomicInteger pageType = new AtomicInteger(0);//记录页面类型，目前已知有3种类型页面
         AtomicBoolean exporting = new AtomicBoolean(false);//标记是否正在导出
@@ -100,6 +103,7 @@ public class TestUtil {
                 header.add(th.getText());
             }
             log.debug("{}", CollUtil.join(header, "\t"));
+            bigWriter.writeHeadRow(header);//写出标题
             for (int i = 1; i <= totalPage; i++) {
                 if (i > 1) {//大于1页的时候才需要点击页码进行翻页
                     //log.info("翻页到 {}", i);
@@ -128,6 +132,7 @@ public class TestUtil {
                         tds.add(td.getText());
                     }
                     log.debug("{}", CollUtil.join(tds, "\t"));
+                    bigWriter.writeRow(tds);//写出一行数据
                 }
                 seleniumUtil.removeWebElements(trs);//这些数据已导出，删除数据，翻页后会添加新数据
             }
@@ -142,6 +147,7 @@ public class TestUtil {
                 header.add(th.getText());
             }
             log.debug("{}", CollUtil.join(header, "\t"));
+            bigWriter.writeHeadRow(header);//写出标题
             String preTr0HTML = null;
             for (int i = 1; i <= totalPage; i++) {
                 if (i > 1) {//大于1页的时候才需要点击页码进行翻页
@@ -191,6 +197,7 @@ public class TestUtil {
                         tds.add(td.getText());
                     }
                     log.debug("{}", CollUtil.join(tds, "\t"));
+                    bigWriter.writeRow(tds);//写出一行数据
                 }
             }
         } else if (pageType.get() == 3) {
@@ -209,6 +216,7 @@ public class TestUtil {
                 header.add(th.getText());
             }
             log.debug("{}", CollUtil.join(header, "\t"));
+            bigWriter.writeHeadRow(header);//写出标题
             for (int i = 1; i <= totalPage; i++) {
                 if (i > 1) {//大于1页的时候才需要点击页码进行翻页
                     //log.info("翻页到 {}", i);
@@ -245,11 +253,14 @@ public class TestUtil {
                         tds.add(td.getText());
                     }
                     log.debug("{}", CollUtil.join(tds, "\t"));
+                    bigWriter.writeRow(tds);//写出一行数据
                 }
                 seleniumUtil.removeWebElements(trs);//这些数据已导出，删除数据，翻页后会添加新数据
             }
         }
+        bigWriter.close();
         seleniumUtil.close();
+        log.info("数据导出完毕");
     }
 
     @Test

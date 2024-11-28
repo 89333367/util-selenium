@@ -55,6 +55,13 @@
             <!--<version>4.27.0</version>-->
             <version>4.13.0</version>
         </dependency>
+        <!-- https://central.sonatype.com/artifact/org.apache.poi/poi-ooxml/versions -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.3.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -84,12 +91,15 @@
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
-                                        <!--<exclude>META-INF/**</exclude>
-                                        <exclude>assets/**</exclude>
-                                        <exclude>license/**</exclude>
-                                        <exclude>font_metrics.properties</exclude>
-                                        <exclude>Log4j-charsets.properties</exclude>
-                                        <exclude>log4j2.xml</exclude>-->
+                                        <exclude>META-INF/**</exclude>
+                                        <exclude>browserwatcher-1.2.0.crx</exclude>
+                                        <exclude>browserwatcher-csp-1.2.0.crx</exclude>
+                                        <exclude>browserwatcher-display-1.2.0.crx</exclude>
+                                        <exclude>browserwatcher-display-csp-1.2.0.crx</exclude>
+                                        <exclude>commands.properties</exclude>
+                                        <exclude>versions.properties</exclude>
+                                        <exclude>webdrivermanager.properties</exclude>
+                                        <exclude>mozilla/**</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
