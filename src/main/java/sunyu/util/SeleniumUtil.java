@@ -217,6 +217,13 @@ public class SeleniumUtil implements Serializable, Closeable {
         return webDriver.findElements(by);
     }
 
+    /**
+     * 通过css选择一个元素，判断其是否为指定状态
+     *
+     * @param cssSelector
+     * @param selected
+     * @return
+     */
     public Boolean waitElementSelectionStateToBeByCssSelector(String cssSelector, boolean selected) {
         By by = By.cssSelector(cssSelector);
         ExpectedCondition<Boolean> booleanExpectedCondition = ExpectedConditions.elementSelectionStateToBe(by, selected);
@@ -445,6 +452,9 @@ public class SeleniumUtil implements Serializable, Closeable {
     }
 
 
+    /**
+     * 销毁工具
+     */
     @Override
     public void close() {
         log.info("销毁工具类开始");
