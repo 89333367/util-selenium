@@ -2,6 +2,7 @@ package sunyu.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ReUtil;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,6 +26,9 @@ public class TestUtil {
 
     @Test
     void t001() {
+        String jarPath = System.getProperty("user.dir");
+        log.info("当前JAR包的磁盘路径: " + jarPath);
+
         SeleniumUtil seleniumUtil = SeleniumUtil.builder().build();
 
         //访问网站
@@ -44,7 +49,8 @@ public class TestUtil {
         seleniumUtil.keepLastWindow();
 
         log.debug("{}", seleniumUtil.getTitle());
-        BigExcelWriter bigWriter = ExcelUtil.getBigWriter(seleniumUtil.getTitle() + ".xlsx");
+        File excel = FileUtil.file(jarPath + FileUtil.FILE_SEPARATOR + seleniumUtil.getTitle() + ".xlsx");
+        BigExcelWriter bigWriter = ExcelUtil.getBigWriter(excel);
 
         AtomicInteger pageType = new AtomicInteger(0);//记录页面类型，目前已知有3种类型页面
         AtomicBoolean exporting = new AtomicBoolean(false);//标记是否正在导出
@@ -261,6 +267,8 @@ public class TestUtil {
         bigWriter.close();
         seleniumUtil.close();
         log.info("数据导出完毕");
+        log.info("excel文件生成在 {}", excel.getAbsolutePath());
+        log.info("此窗口可以关闭");
     }
 
     @Test

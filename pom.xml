@@ -34,6 +34,12 @@
             <artifactId>hutool-all</artifactId>
             <version>5.8.34</version>
         </dependency>
+        <!-- https://central.sonatype.com/artifact/ch.qos.logback/logback-classic/versions -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.12</version>
+        </dependency>
         <!-- https://central.sonatype.com/artifact/org.junit.jupiter/junit-jupiter/versions -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -92,14 +98,10 @@
                                     <artifact>*:*</artifact>
                                     <excludes>
                                         <exclude>META-INF/**</exclude>
-                                        <exclude>browserwatcher-1.2.0.crx</exclude>
-                                        <exclude>browserwatcher-csp-1.2.0.crx</exclude>
-                                        <exclude>browserwatcher-display-1.2.0.crx</exclude>
-                                        <exclude>browserwatcher-display-csp-1.2.0.crx</exclude>
-                                        <exclude>commands.properties</exclude>
-                                        <exclude>versions.properties</exclude>
-                                        <exclude>webdrivermanager.properties</exclude>
                                         <exclude>mozilla/**</exclude>
+                                        <exclude>*.crx</exclude>
+                                        <exclude>*.properties</exclude>
+                                        <exclude>*.xml</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
