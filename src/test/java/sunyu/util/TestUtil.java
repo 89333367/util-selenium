@@ -22,14 +22,48 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TestUtil {
-    Log log = LogFactory.get();
+    private final Log log = LogFactory.get();
+
+    private final SeleniumUtil seleniumUtil = SeleniumUtil.builder().build();
+
+    /**
+     * 添加layui能力
+     */
+    private void addLayui() {
+        //log.info("添加layui能力");
+        seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("addLayui.js"));
+        //log.info("等待layui添加完毕");
+        seleniumUtil.waitPresenceOfElementLocatedByCssSelector("#selenium_layui_loaded");
+    }
+
+    /**
+     * 添加fixbar能力
+     */
+    private void addFixbar() {
+        addLayui();
+
+        //log.info("添加layui fixbar能力");
+        seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("addFixbar.js"));
+    }
+
+    /**
+     * 在页面中显示消息
+     *
+     * @param msg
+     * @param timeout
+     */
+    private void showMessage(String msg, Integer timeout) {
+        addLayui();
+
+        //log.info("{}", msg);
+        seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), msg, timeout);
+    }
+
 
     @Test
     void t001() {
         String jarPath = System.getProperty("user.dir");
         log.info("当前JAR包的磁盘路径: " + jarPath);
-
-        SeleniumUtil seleniumUtil = SeleniumUtil.builder().build();
 
         //访问网站
         seleniumUtil.openUrl("https://td.sxwhkj.com/Account/BuTCapitalGongS");
@@ -40,7 +74,7 @@ public class TestUtil {
         seleniumUtil.waitPresenceOfElementLocatedByCssSelector(".footer");
 
         log.info("请选择省");
-        seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "请选择省");
+        showMessage("请选择省", 86400);
 
         //等待窗口数量为2
         seleniumUtil.waitNumberOfWindowsToBe(2);
@@ -56,26 +90,25 @@ public class TestUtil {
         AtomicBoolean exporting = new AtomicBoolean(false);//标记是否正在导出
 
         //向页面注入复选框
-        log.debug("注入导出复选框");
-        String addCheckboxScript = ResourceUtil.readUtf8Str("addCheckbox.js");
+        log.debug("注入导出按钮");
         ThreadUtil.execute(() -> {
             while (!exporting.get()) {
-                WebElement searchDiv;
+                //循环判断页面是哪一种类型的
                 while (true) {
                     try {
-                        searchDiv = seleniumUtil.findElementByCssSelector("div.operate-btn");
+                        seleniumUtil.findElementByCssSelector("div.operate-btn");
                         pageType.set(1);
                         break;
                     } catch (Exception e) {
                     }
                     try {
-                        searchDiv = seleniumUtil.findElementByCssSelector("div.queryarea_footer>div");
+                        seleniumUtil.findElementByCssSelector("div.queryarea_footer>div");
                         pageType.set(2);
                         break;
                     } catch (Exception e) {
                     }
                     try {
-                        searchDiv = seleniumUtil.findElementByCssSelector("div.ser>form");
+                        seleniumUtil.findElementByCssSelector("div.ser>form");
                         pageType.set(3);
                         break;
                     } catch (Exception e) {
@@ -83,18 +116,18 @@ public class TestUtil {
                     ThreadUtil.sleep(1000);
                 }
                 //log.info("找到 {} 类页面", pageType.get());
-                seleniumUtil.executeJavascript(addCheckboxScript, searchDiv);
+                addFixbar();
                 ThreadUtil.sleep(1000);
             }
         });
 
-        seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "勾选复选框进行数据导出");
+        showMessage("查询后，点击右下角的导出按钮进行数据导出。", 86400);
 
-        log.info("等待选中导出复选框");
-        seleniumUtil.waitElementSelectionStateToBeByCssSelector("#selenium_exportCheckbox", true);
-        log.info("导出复选框被选中，准备导出数据");
+        log.info("等待点击导出按钮");
+        seleniumUtil.waitPresenceOfElementLocatedByCssSelector("#selenium_export");
+        log.info("导出按钮被点击，准备导出数据");
         exporting.set(true);//更改导出标记
-        seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), "准备导出数据....");
+        showMessage("准备导出数据....", 86400);
 
         log.debug("页面类型 {}", pageType.get());
         List<String> header = new ArrayList<>();
@@ -131,7 +164,7 @@ public class TestUtil {
                 }
                 //log.info("页码 {} 有 {} 行数据", i, trs.size());
                 log.info("导出进度 {}/{}", i, totalPage);
-                seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
+                showMessage(StrUtil.format("导出进度 {}/{}", i, totalPage), 86400);
                 for (WebElement tr : trs) {
                     List<String> tds = new ArrayList<>();
                     for (WebElement td : tr.findElements(By.cssSelector("td"))) {
@@ -196,7 +229,7 @@ public class TestUtil {
                 }
                 //log.info("页码 {} 有 {} 行数据", i, trs.size());
                 log.info("导出进度 {}/{}", i, totalPage);
-                seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
+                showMessage(StrUtil.format("导出进度 {}/{}", i, totalPage), 86400);
                 for (WebElement tr : trs) {
                     List<String> tds = new ArrayList<>();
                     for (WebElement td : tr.findElements(By.cssSelector("td"))) {
@@ -252,7 +285,7 @@ public class TestUtil {
                 }
                 //log.info("页码 {} 有 {} 行数据", i, trs.size());
                 log.info("导出进度 {}/{}", i, totalPage);
-                seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), StrUtil.format("导出进度 {}/{}", i, totalPage));
+                showMessage(StrUtil.format("导出进度 {}/{}", i, totalPage), 86400);
                 for (WebElement tr : trs) {
                     List<String> tds = new ArrayList<>();
                     for (WebElement td : tr.findElements(By.cssSelector("td"))) {
@@ -269,44 +302,5 @@ public class TestUtil {
         log.info("数据导出完毕");
         log.info("excel文件生成在 {}", excel.getAbsolutePath());
         log.info("此窗口可以关闭");
-    }
-
-    @Test
-    void t002() {
-        String s = "共7474条， 第1/499页";
-        log.info("{}", ReUtil.getGroup1("第(\\d+)/", s));
-        log.info("{}", ReUtil.getGroup1("/(\\d+)页", s));
-        s = "共7条， 第1/1页";
-        log.info("{}", ReUtil.getGroup1("第(\\d+)/", s));
-        log.info("{}", ReUtil.getGroup1("/(\\d+)页", s));
-    }
-
-    @Test
-    void t003() {
-        String s = " 共229341条，第1/15290页 ";
-        log.info("{}", ReUtil.getGroup1("第(\\d+)/", s));
-        log.info("{}", ReUtil.getGroup1("/(\\d+)页", s));
-        s = " 共2条，第1/1页 ";
-        log.info("{}", ReUtil.getGroup1("第(\\d+)/", s));
-        log.info("{}", ReUtil.getGroup1("/(\\d+)页", s));
-    }
-
-    @Test
-    void t004() {
-        for (int i = 1; i <= 10; i++) {
-            log.info("{}", i);
-            if (i == 5) {
-                i--;
-                ThreadUtil.sleep(1000);
-                continue;
-            }
-            ThreadUtil.sleep(1000);
-        }
-    }
-
-    @Test
-    void t005() {
-        String s = "/GZBT2021To23/pub/GongShiSearch?pageIndex=2";
-        log.info("{}", ReUtil.getGroup1("pageIndex=(\\d+)", s));
     }
 }

@@ -37,7 +37,6 @@ public class SeleniumUtil implements Serializable, Closeable {
     private WebDriverManager webDriverManager;
     private WebDriver webDriver;
 
-
     /**
      * 资源回收
      */

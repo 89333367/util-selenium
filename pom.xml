@@ -32,19 +32,19 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.34</version>
+            <version>5.8.35</version>
         </dependency>
         <!-- https://central.sonatype.com/artifact/ch.qos.logback/logback-classic/versions -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.12</version>
+            <version>1.5.16</version>
         </dependency>
         <!-- https://central.sonatype.com/artifact/org.junit.jupiter/junit-jupiter/versions -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.11.3</version>
+            <version>5.11.4</version>
             <scope>test</scope>
         </dependency>
         <!-- https://central.sonatype.com/artifact/io.github.bonigarcia/webdrivermanager/versions -->
@@ -65,7 +65,7 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>5.3.0</version>
+            <version>5.4.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
