@@ -1,6 +1,16 @@
 # util-selenium
 selenium工具
 
+# 添加依赖
+```xml
+<dependency>
+    <groupId>sunyu.util</groupId>
+    <artifactId>util-selenium</artifactId>
+    <!-- {selenium-java.version}_{util.version}_{jdk.version}_{architecture.version} -->
+    <version>4.13.0_1.0_jdk8_x64</version>
+</dependency>
+```
+
 # 工具初始化与销毁
 ```java
 //工具初始化
