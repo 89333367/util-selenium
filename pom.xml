@@ -33,20 +33,20 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.36</version>
+            <version>5.8.38</version>
         </dependency>
         <!-- https://central.sonatype.com/artifact/org.junit.jupiter/junit-jupiter/versions -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.12.1</version>
+            <version>5.12.2</version>
             <scope>test</scope>
         </dependency>
         <!-- https://central.sonatype.com/artifact/io.github.bonigarcia/webdrivermanager/versions -->
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
-            <version>6.0.0</version>
+            <version>6.1.0</version>
         </dependency>
         <!-- https://central.sonatype.com/artifact/org.seleniumhq.selenium/selenium-java/versions -->
         <dependency>
@@ -60,7 +60,7 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>5.4.0</version>
+            <version>5.4.1</version>
             <scope>test</scope>
         </dependency>
         <!-- https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-core/versions -->
@@ -144,7 +144,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.2</version>
+                <version>3.5.3</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
