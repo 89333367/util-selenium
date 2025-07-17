@@ -303,4 +303,11 @@ public class TestUtil {
         log.info("excel文件生成在 {}", excel.getAbsolutePath());
         log.info("此窗口可以关闭");
     }
+
+    @Test
+    void t002() {
+        seleniumUtil.openUrl("http://www.baidu.com");
+        ThreadUtil.sleep(1000 * 10);
+        seleniumUtil.close();
+    }
 }

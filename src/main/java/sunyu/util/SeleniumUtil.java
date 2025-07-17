@@ -6,10 +6,7 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import cn.hutool.system.SystemUtil;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -47,9 +44,31 @@ public class SeleniumUtil implements AutoCloseable {
                 log.info("[配置驱动] 配置 chrome web driver");
                 config.webDriverManager.setup();
                 ChromeOptions options = new ChromeOptions();
-                options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation", "disable-popup-blocking"});// 禁用浏览器的自动测试软件提示，禁用 Chrome 的弹出窗口拦截功能
+                //options.addArguments("--headless");//使用无头模式,作用是不用打开浏览器
+                //options.addArguments("--disable-gpu");//在某些系统上无头模式需要禁用GPU加速
+                //options.addArguments("--disable-accelerated-2d-canvas"); // 禁用加速2D Canvas，减少GPU使用
+                //options.addArguments("--blink-settings=imagesEnabled=false");// 禁用图片加载，提高性能
+                options.addArguments("--disable-extensions");// 禁用扩展和插件，减少资源占用和干扰
+                options.addArguments("--disable-dev-shm-usage");// 解决在Docker容器中可能出现的共享内存问题
+                options.addArguments("--disable-smooth-scrolling");// 禁用平滑滚动，减少自动滚动问题
+                options.addArguments("--window-size=1366,768");// 设置固定窗口大小，避免响应式变化导致的元素定位问题
+                options.addArguments("--disable-features=site-per-process");// 禁用站点隔离，减少内存使用
+                options.addArguments("--disable-default-apps");// 禁用默认应用，减少启动时间
+                options.addArguments("--disable-logging");// 减少日志输出，提高性能
+                options.addArguments("--disable-infobars");// 禁用信息栏，避免干扰
+                options.addArguments("--disable-notifications");// 禁用通知，避免干扰
+                options.addArguments("--disable-web-security"); // 禁用同源策略检查
+                options.addArguments("--no-sandbox"); // 禁用沙箱模式，提高性能(注意安全风险)
+                options.addArguments("--disable-setuid-sandbox"); // 禁用setuid沙箱，配合--no-sandbox使用
+                options.addArguments("--disable-crash-reporter"); // 禁用崩溃报告
+                options.addArguments("--disable-in-process-stack-traces"); // 禁用进程内堆栈跟踪
+                options.addArguments("--disable-breakpad"); // 禁用断点调试
+                options.addArguments("--aggressive-cache-discard"); // 积极丢弃缓存，减少内存使用
+                options.addArguments("--disable-ipc-flooding-protection"); // 禁用IPC洪水保护
+                options.addArguments("--js-flags=--max-old-space-size=512");// 限制JavaScript引擎内存使用，防止内存溢出
                 options.addArguments("--remote-allow-origins=*", "disable-search-engine-choice-screen");//解决 403 出错问题，禁用Chrome浏览器在启动时显示的搜索引擎选择界面
-                //options.setHeadless(true);//这句话作用是不用打开浏览器
+                options.setPageLoadStrategy(PageLoadStrategy.EAGER);// 可选值：NONE (不等待加载), EAGER (DOM就绪即可), NORMAL (等待完全加载)
+                options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation", "disable-popup-blocking"});// 禁用浏览器的自动测试软件提示，禁用 Chrome 的弹出窗口拦截功能
                 config.webDriver = new ChromeDriver(options);
             } catch (Exception e) {
                 config.webDriverManager = null;
@@ -66,6 +85,8 @@ public class SeleniumUtil implements AutoCloseable {
                 EdgeOptions options = new EdgeOptions();
                 options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});// 禁用浏览器的自动测试软件提示
                 options.addArguments("--remote-allow-origins=*", "--disable-features=Sync");//解决 403 出错问题，屏蔽Microsoft Edge浏览器在启动时弹出的同步用户配置和个性化设置的提示
+                options.setCapability("ms:edgeChromium", true);
+                options.setCapability("inPrivate", true);// 使用隐私模式，避免历史记录、cookie等信息的干扰
                 config.webDriver = new EdgeDriver(options);
             } catch (Exception e) {
                 config.webDriverManager = null;
