@@ -8,6 +8,7 @@ selenium工具
     <artifactId>util-selenium</artifactId>
     <!-- {selenium-java.version}_{util.version}_{jdk.version}_{architecture.version} -->
     <version>4.13.0_1.0_jdk8_x64</version>
+    <classifier>shaded</classifier>
 </dependency>
 ```
 
