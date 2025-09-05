@@ -7,10 +7,10 @@
     <groupId>sunyu.util</groupId>
     <artifactId>util-selenium</artifactId>
     <!-- {selenium-java.version}_{util.version}_{jdk.version}_{architecture.version} -->
-    <version>4.13.0_1.0_jdk8_x64</version>
+    <version>4.35.0_1.0_jdk11_x64</version>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,15 +41,16 @@
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
-            <version>6.2.0</version>
+            <version>6.3.1</version>
         </dependency>
         <!-- https://central.sonatype.com/artifact/org.seleniumhq.selenium/selenium-java/versions -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
+            <!-- jdk11用新版本 -->
+            <version>4.35.0</version>
             <!-- jdk8只能支持到4.13.0版本，再高就要使用jdk11了 -->
-            <!--<version>4.35.0</version>-->
-            <version>4.13.0</version>
+            <!--<version>4.13.0</version>-->
         </dependency>
         <!-- https://central.sonatype.com/artifact/org.apache.poi/poi-ooxml/versions -->
         <dependency>
