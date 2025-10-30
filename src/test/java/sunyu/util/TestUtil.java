@@ -1,5 +1,15 @@
 package sunyu.util;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
@@ -11,15 +21,6 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import cn.hutool.poi.excel.BigExcelWriter;
 import cn.hutool.poi.excel.ExcelUtil;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class TestUtil {
     private final Log log = LogFactory.get();
@@ -58,7 +59,6 @@ public class TestUtil {
         //log.info("{}", msg);
         seleniumUtil.executeJavascript(ResourceUtil.readUtf8Str("showMessage.js"), msg, timeout);
     }
-
 
     @Test
     void t001() {
@@ -138,7 +138,8 @@ public class TestUtil {
             int totalPage = Convert.toInt(ReUtil.getGroup1("/(\\d+)页", s));
             log.info("准备导出 {} 页数据", totalPage);
             //获取表头
-            for (WebElement th : seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("table[role='c-table']>thead>tr>th")) {
+            for (WebElement th : seleniumUtil
+                    .waitVisibilityOfAllElementsLocatedByCssSelector("table[role='c-table']>thead>tr>th")) {
                 header.add(th.getText());
             }
             log.debug("{}", CollUtil.join(header, "\t"));
@@ -146,7 +147,8 @@ public class TestUtil {
             for (int i = 1; i <= totalPage; i++) {
                 if (i > 1) {//大于1页的时候才需要点击页码进行翻页
                     //log.info("翻页到 {}", i);
-                    for (WebElement el : seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("div.pagerItem>a")) {
+                    for (WebElement el : seleniumUtil
+                            .waitVisibilityOfAllElementsLocatedByCssSelector("div.pagerItem>a")) {
                         if (el.getText().equals(Convert.toStr(i))) {
                             //log.debug("点击翻页 {}", i);
                             seleniumUtil.executeJavascript("arguments[0].click()", el);//点击页码，进行翻页
@@ -157,7 +159,8 @@ public class TestUtil {
                 List<WebElement> trs = null;
                 while (CollUtil.isEmpty(trs)) {
                     try {
-                        trs = seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("table[role='c-table']>tbody>tr");
+                        trs = seleniumUtil
+                                .waitVisibilityOfAllElementsLocatedByCssSelector("table[role='c-table']>tbody>tr");
                     } catch (Exception e) {
                         log.warn("获取数据异常，重试");
                     }
@@ -182,7 +185,8 @@ public class TestUtil {
             int totalPage = Convert.toInt(ReUtil.getGroup1("/(\\d+)页", s));
             log.info("准备导出 {} 页数据", totalPage);
             //获取表头
-            for (WebElement th : seleniumUtil.waitPresenceOfAllElementsLocatedByCssSelector("table.el-table__header>thead>tr>th")) {
+            for (WebElement th : seleniumUtil
+                    .waitPresenceOfAllElementsLocatedByCssSelector("table.el-table__header>thead>tr>th")) {
                 header.add(th.getText());
             }
             log.debug("{}", CollUtil.join(header, "\t"));
@@ -216,7 +220,8 @@ public class TestUtil {
                             seleniumUtil.waitInvisibilityOfElementLocatedByCssSelector("div.code-dialog");
                             log.info("验证码输入完毕");
                         }
-                        trs = seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("table.el-table__body>tbody>tr");
+                        trs = seleniumUtil
+                                .waitVisibilityOfAllElementsLocatedByCssSelector("table.el-table__body>tbody>tr");
                         if (preTr0HTML != null && preTr0HTML.equals(seleniumUtil.getOuterHTML(trs.get(0)))) {
                             log.warn("当前获取的数据与上一页数据相同，重新获取");
                             trs = null;
@@ -251,7 +256,8 @@ public class TestUtil {
             }
             log.info("准备导出 {} 页数据", totalPage);
             //获取表头
-            for (WebElement th : seleniumUtil.waitVisibilityOfAllElementsLocatedByCssSelector("table>tbody>tr>td>table>thead>tr>td")) {
+            for (WebElement th : seleniumUtil
+                    .waitVisibilityOfAllElementsLocatedByCssSelector("table>tbody>tr>td>table>thead>tr>td")) {
                 header.add(th.getText());
             }
             log.debug("{}", CollUtil.join(header, "\t"));

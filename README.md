@@ -11,15 +11,6 @@ selenium工具
     <version>4.13.0_1.0_jdk8_x64</version>
     <classifier>shaded</classifier>
 </dependency>
-
-<!-- jdk11用这个 -->
-<dependency>
-    <groupId>sunyu.util</groupId>
-    <artifactId>util-selenium</artifactId>
-    <!-- {selenium-java.version}_{util.version}_{jdk.version}_{architecture.version} -->
-    <version>4.35.0_1.0_jdk11_x64</version>
-    <classifier>shaded</classifier>
-</dependency>
 ```
 
 # 工具初始化与销毁

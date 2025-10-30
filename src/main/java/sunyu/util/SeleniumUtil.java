@@ -1,12 +1,14 @@
 package sunyu.util;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.log.Log;
-import cn.hutool.log.LogFactory;
-import cn.hutool.system.SystemUtil;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.*;
+import java.time.Duration;
+import java.util.List;
+import java.util.function.Function;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -17,9 +19,12 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.function.Function;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
+import cn.hutool.system.SystemUtil;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 /**
  * selenium自动化测试工具类
@@ -35,7 +40,7 @@ public class SeleniumUtil implements AutoCloseable {
     }
 
     private SeleniumUtil(Config config) {
-        log.info("[构建SeleniumUtil] 开始");
+        log.info("[构建{}] 开始", this.getClass().getSimpleName());
         if (config.webDriverManager == null) {
             try {
                 log.info("[选择驱动] 尝试选择 chrome 驱动");
@@ -68,7 +73,8 @@ public class SeleniumUtil implements AutoCloseable {
                 options.addArguments("--js-flags=--max-old-space-size=512");// 限制JavaScript引擎内存使用，防止内存溢出
                 options.addArguments("--remote-allow-origins=*", "disable-search-engine-choice-screen");//解决 403 出错问题，禁用Chrome浏览器在启动时显示的搜索引擎选择界面
                 options.setPageLoadStrategy(PageLoadStrategy.EAGER);// 可选值：NONE (不等待加载), EAGER (DOM就绪即可), NORMAL (等待完全加载)
-                options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation", "disable-popup-blocking"});// 禁用浏览器的自动测试软件提示，禁用 Chrome 的弹出窗口拦截功能
+                options.setExperimentalOption("excludeSwitches",
+                        new String[] { "enable-automation", "disable-popup-blocking" });// 禁用浏览器的自动测试软件提示，禁用 Chrome 的弹出窗口拦截功能
                 config.webDriver = new ChromeDriver(options);
             } catch (Exception e) {
                 config.webDriverManager = null;
@@ -83,7 +89,7 @@ public class SeleniumUtil implements AutoCloseable {
                 log.info("[配置驱动] 配置 edge web driver");
                 config.webDriverManager.setup();
                 EdgeOptions options = new EdgeOptions();
-                options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});// 禁用浏览器的自动测试软件提示
+                options.setExperimentalOption("excludeSwitches", new String[] { "enable-automation" });// 禁用浏览器的自动测试软件提示
                 options.addArguments("--remote-allow-origins=*", "--disable-features=Sync");//解决 403 出错问题，屏蔽Microsoft Edge浏览器在启动时弹出的同步用户配置和个性化设置的提示
                 options.setCapability("ms:edgeChromium", true);
                 options.setCapability("inPrivate", true);// 使用隐私模式，避免历史记录、cookie等信息的干扰
@@ -107,7 +113,7 @@ public class SeleniumUtil implements AutoCloseable {
                 log.warn(e);
             }
         }
-        log.info("[构建SeleniumUtil] 结束");
+        log.info("[构建{}] 结束", this.getClass().getSimpleName());
 
         this.config = config;
     }
@@ -130,10 +136,10 @@ public class SeleniumUtil implements AutoCloseable {
      */
     @Override
     public void close() {
-        log.info("[销毁SeleniumUtil] 开始");
+        log.info("[销毁{}] 开始", this.getClass().getSimpleName());
         config.webDriver.quit();
         killDriverProcess();
-        log.info("[销毁SeleniumUtil] 结束");
+        log.info("[销毁{}] 结束", this.getClass().getSimpleName());
     }
 
     /**
@@ -287,7 +293,8 @@ public class SeleniumUtil implements AutoCloseable {
      * @return
      */
     public Boolean waitNumberOfWindowsToBe(int expectedNumberOfWindows) {
-        ExpectedCondition<Boolean> booleanExpectedCondition = ExpectedConditions.numberOfWindowsToBe(expectedNumberOfWindows);
+        ExpectedCondition<Boolean> booleanExpectedCondition = ExpectedConditions
+                .numberOfWindowsToBe(expectedNumberOfWindows);
         return webDriverWaitUntil(booleanExpectedCondition);
     }
 
@@ -324,7 +331,8 @@ public class SeleniumUtil implements AutoCloseable {
      */
     public Boolean waitElementSelectionStateToBeByCssSelector(String cssSelector, boolean selected) {
         By by = By.cssSelector(cssSelector);
-        ExpectedCondition<Boolean> booleanExpectedCondition = ExpectedConditions.elementSelectionStateToBe(by, selected);
+        ExpectedCondition<Boolean> booleanExpectedCondition = ExpectedConditions.elementSelectionStateToBe(by,
+                selected);
         return webDriverWaitUntil(booleanExpectedCondition);
     }
 
@@ -405,10 +413,10 @@ public class SeleniumUtil implements AutoCloseable {
      * @return
      */
     public List<WebElement> waitPresenceOfAllElementsLocatedBy(By by) {
-        ExpectedCondition<List<WebElement>> listExpectedCondition = ExpectedConditions.presenceOfAllElementsLocatedBy(by);
+        ExpectedCondition<List<WebElement>> listExpectedCondition = ExpectedConditions
+                .presenceOfAllElementsLocatedBy(by);
         return webDriverWaitUntil(listExpectedCondition);
     }
-
 
     /**
      * 等待一个元素存在于dom中并可见
@@ -429,7 +437,8 @@ public class SeleniumUtil implements AutoCloseable {
      * @return
      */
     public List<WebElement> waitVisibilityOfAllElementsLocatedBy(By by) {
-        ExpectedCondition<List<WebElement>> listExpectedCondition = ExpectedConditions.visibilityOfAllElementsLocatedBy(by);
+        ExpectedCondition<List<WebElement>> listExpectedCondition = ExpectedConditions
+                .visibilityOfAllElementsLocatedBy(by);
         return webDriverWaitUntil(listExpectedCondition);
     }
 
@@ -454,7 +463,6 @@ public class SeleniumUtil implements AutoCloseable {
     public <V> V webDriverWaitUntil(Function<? super WebDriver, V> condition) {
         return webDriverWaitUntil(Duration.ofDays(1), condition);
     }
-
 
     /**
      * 等待一个条件成立

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>sunyu.util</groupId>
     <artifactId>util-selenium</artifactId>
     <!-- {selenium-java.version}_{util.version}_{jdk.version}_{architecture.version} -->
-    <version>4.35.0_1.0_jdk11_x64</version>
+    <version>4.13.0_1.0_jdk8_x64</version>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -35,23 +35,22 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.40</version>
+            <version>5.8.41</version>
         </dependency>
         <!-- https://central.sonatype.com/artifact/io.github.bonigarcia/webdrivermanager/versions -->
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
-            <version>6.3.1</version>
+            <version>6.3.2</version>
         </dependency>
         <!-- https://central.sonatype.com/artifact/org.seleniumhq.selenium/selenium-java/versions -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <!-- jdk11用新版本 -->
-            <version>4.35.0</version>
-            <!-- jdk8只能支持到4.13.0版本，再高就要使用jdk11了 -->
-            <!--<version>4.13.0</version>-->
+            <version>4.13.0</version>
         </dependency>
+
+
         <!-- https://central.sonatype.com/artifact/org.apache.poi/poi-ooxml/versions -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -83,18 +82,37 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.13.4</version>
+            <version>5.14.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- Logging: Log4j2 for JDK 8 -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+        <!-- Optional: bridge JUL into Log4j2 (uncomment if you want to silence Selenium JUL logs via Log4j2 config)
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jul</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+        -->
     </dependencies>
 
     <build>
         <plugins>
-            <!-- https://central.sonatype.com/artifact/org.apache.maven.plugins/maven-shade-plugin/versions -->
+            <!--
+            https://central.sonatype.com/artifact/org.apache.maven.plugins/maven-shade-plugin/versions -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -116,11 +134,11 @@
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
-                                        <!--<exclude>META-INF/**</exclude>
-                                        <exclude>mozilla/**</exclude>
-                                        <exclude>*.crx</exclude>
-                                        <exclude>*.properties</exclude>
-                                        <exclude>*.xml</exclude>-->
+                                        <!-- 关键：移除签名文件，避免胖包校验失败 -->
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <!-- 可选：保留其他静态资源，必要时再按需排除 -->
                                     </excludes>
                                 </filter>
                             </filters>
@@ -130,7 +148,8 @@
             </plugin>
 
             <!-- 源码也上传到私服 -->
-            <!-- https://central.sonatype.com/artifact/org.apache.maven.plugins/maven-source-plugin/versions -->
+            <!--
+            https://central.sonatype.com/artifact/org.apache.maven.plugins/maven-source-plugin/versions -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -146,21 +165,23 @@
             </plugin>
 
             <!-- 跳过单元测试 -->
-            <!-- https://central.sonatype.com/artifact/org.apache.maven.plugins/maven-surefire-plugin/versions -->
+            <!--
+            https://central.sonatype.com/artifact/org.apache.maven.plugins/maven-surefire-plugin/versions -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.3</version>
+                <version>3.5.4</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
             </plugin>
 
-            <!-- https://central.sonatype.com/artifact/org.apache.maven.plugins/maven-compiler-plugin/versions -->
+            <!--
+            https://central.sonatype.com/artifact/org.apache.maven.plugins/maven-compiler-plugin/versions -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.14.0</version>
+                <version>3.14.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
