@@ -7,8 +7,8 @@ selenium工具
 <dependency>
     <groupId>sunyu.util</groupId>
     <artifactId>util-selenium</artifactId>
-    <!-- {selenium-java.version}_{util.version}_{jdk.version}_{architecture.version} -->
-    <version>4.13.0_1.0_jdk8_x64</version>
+    <!-- {selenium-java.version}_{util.version}_{jdk.version} -->
+    <version>4.13.0_2.0_jdk8</version>
     <classifier>shaded</classifier>
 </dependency>
 ```
